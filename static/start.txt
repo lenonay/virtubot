@@ -1,0 +1,7 @@
+Para poder usar un este bot debe ser un usuario registrado.
+
+Para registrarte utilice el siguiente comando:
+
+  /registrar <secreto>
+
+Suerte y bendiciones.

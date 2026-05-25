@@ -1,6 +1,8 @@
 import mysql from "mysql2/promise";
 import * as fs from "node:fs";
 
+import { logError } from "../utils/log.js";
+
 async function GetDB() {
   return await mysql.createConnection({
     database: process.env.db_db,
@@ -70,14 +72,30 @@ export async function InitDB() {
 }
 
 export class Database {
-  static async getUsers(){
+  static async getUsers() {
     // Cargamos una instancia de la base de datos
     const db = await GetDB();
 
     // Pedimos todos los usuarios
-    const results = await db.query('SELECT * FROM users');
+    const results = await db.query("SELECT * FROM users");
 
-    // Devolvemos los usuarios
-    return results[0]
+    // Devolvemos los usuarios y cortamos la conexion a la db
+    db.end();
+    return results[0];
+  }
+
+  static async addUser(from) {
+    const db = await GetDB();
+
+    try {
+      const query = await db.execute(
+        "INSERT INTO users (id, name, username) VALUES (?,?,?)",
+        [from.id, from.first_name, from.username],
+      );
+    } catch (e) {
+      logError("Error añadiendo el usuario", e);
+    }
+
+    return;
   }
 }
